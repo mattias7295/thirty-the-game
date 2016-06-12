@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">Thirty The Game</string>
+    <string name="scoring_title_name">Leaderboard</string>
+    <string name="confirm_button">Confirm</string>
+    <string name="choice_low">Low</string>
+    <string name="choice_4">4</string>
+    <string name="choice_5">5</string>
+    <string name="choice_6">6</string>
+    <string name="choice_7">7</string>
+    <string name="choice_8">8</string>
+    <string name="choice_9">9</string>
+    <string name="choice_10">10</string>
+    <string name="choice_11">11</string>
+    <string name="choice_12">12</string>
+    <string name="total">Total</string>
+    <string name="choice">Choice</string>
+
+    <string-array name="choices_array">
+        <item>@string/choice_low</item>
+        <item>@string/choice_4</item>
+        <item>@string/choice_5</item>
+        <item>@string/choice_6</item>
+        <item>@string/choice_7</item>
+        <item>@string/choice_8</item>
+        <item>@string/choice_9</item>
+        <item>@string/choice_10</item>
+        <item>@string/choice_11</item>
+        <item>@string/choice_12</item>
+        <item>None</item>
+    </string-array>
+</resources>
