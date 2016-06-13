@@ -19,43 +19,48 @@ public class LeaderBoardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leader);
 
-        Intent intent = getIntent();
+        PlayerScoreParcel playerInfo = getIntent().getParcelableExtra(GameBoardActivity.SCORE);
 
-        int score[] = intent.getIntArrayExtra(GameBoardActivity.SCORE);
+        int numPlayers = playerInfo.getPlayerName().length;
 
         TableLayout tl = (TableLayout)findViewById(R.id.score_table);
         int numRows = tl.getChildCount();
 
 
-        TextView playerTextView = new TextView(this);
-        playerTextView.setText("player1");
-        playerTextView.setTypeface(Typeface.DEFAULT_BOLD);
-        View topChild = tl.getChildAt(0);
-        if (topChild instanceof TableRow) {
-            TableRow topRow = (TableRow)topChild;
-            topRow.addView(playerTextView);
-        }
-        for (int i = 1; i < numRows-1; i++) {
-            View child = tl.getChildAt(i);
-            if (child instanceof TableRow) {
-                TextView tmpView = new TextView(this);
-                tmpView.setText(String.format("%d", score[i-1]));
-
-                TableRow row = (TableRow)child;
-                row.addView(tmpView);
+        for (int i = 0; i < numPlayers; i++) {
+            TextView playerTextView = new TextView(this);
+            playerTextView.setText(playerInfo.getPlayerName()[i]);
+            playerTextView.setTypeface(Typeface.DEFAULT_BOLD);
+            View topChild = tl.getChildAt(0);
+            if (topChild instanceof TableRow) {
+                TableRow topRow = (TableRow)topChild;
+                topRow.addView(playerTextView);
             }
-
         }
-        TextView totalScoreView = new TextView(this);
-        totalScoreView.setText("1");
-        totalScoreView.setTypeface(Typeface.DEFAULT_BOLD);
-        View bottomChild = tl.getChildAt(numRows-1);
-        if (bottomChild instanceof TableRow) {
-            TableRow bottomRow = (TableRow)bottomChild;
-            bottomRow.addView(totalScoreView);
+
+        for (int i = 0; i < numPlayers; i++) {
+            for (int j = 1; j < numRows-1; j++) {
+                View child = tl.getChildAt(j);
+                if (child instanceof TableRow) {
+                    TextView tmpView = new TextView(this);
+                    int index = (i*10)+(j-1);
+                    tmpView.setText(String.format("%d", playerInfo.getPlayerScore()[index]));
+
+                    TableRow row = (TableRow)child;
+                    row.addView(tmpView);
+                }
+            }
+        }
+        for (int i = 0; i < numPlayers; i++) {
+            TextView totalScoreView = new TextView(this);
+            totalScoreView.setText(String.format("%d",playerInfo.getPlayerTotalScore()[i]));
+            totalScoreView.setTypeface(Typeface.DEFAULT_BOLD);
+            View bottomChild = tl.getChildAt(numRows-1);
+            if (bottomChild instanceof TableRow) {
+                TableRow bottomRow = (TableRow)bottomChild;
+                bottomRow.addView(totalScoreView);
+            }
         }
 
     }
-
-
 }

@@ -89,8 +89,13 @@ public class GameBoardActivity extends AppCompatActivity {
     }
 
     public void showLeaderBoardActivity(View view) {
+        String[] playerNames = new String[]{mGame.getPlayerName()};
+        int[] playersScore = mGame.getScore();
+        int[] playersTotalScore = new int[]{mGame.getTotalScore()};
+
+        PlayerScoreParcel dataParcel = new PlayerScoreParcel(playerNames, playersScore, playersTotalScore);
         Intent intent = new Intent(this, LeaderBoardActivity.class);
-        intent.putExtra(SCORE, mGame.getScore());
+        intent.putExtra(SCORE, dataParcel);
 
         startActivity(intent);
     }
@@ -135,5 +140,12 @@ public class GameBoardActivity extends AppCompatActivity {
 
     private void updateScoreView() {
         mScoreView.setText(String.format("Score: %d", mGame.getTotalScore()));
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+
+
+        super.onSaveInstanceState(outState);
     }
 }
