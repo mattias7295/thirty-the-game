@@ -125,4 +125,14 @@
         android:layout_alignTop="@+id/roll_button"
         android:layout_alignParentStart="true"
         android:onClick="showLeaderBoardActivity" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Turn:"
+        android:id="@+id/turn_text_view"
+        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@+id/score_view"
+        android:layout_marginRight="10dip"
+        android:textSize="@dimen/abc_text_size_medium_material" />
 </RelativeLayout>

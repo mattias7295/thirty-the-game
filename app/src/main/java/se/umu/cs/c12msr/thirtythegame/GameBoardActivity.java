@@ -20,12 +20,19 @@ public class GameBoardActivity extends AppCompatActivity {
     public final static String SCORE = "se.umu.cs.c12msr.thirtythegame.VALUES";
 
     private ImageButton mDiceButtons[];
+
     private TextView mScoreView;
-    private Game mGame;
+    private TextView mTurnView;
+    private TextView mPlayerView;
+
     private Button mRollButton;
+
     private Spinner mChoicesSpinner;
+
     private String mSelectedChoice;
     private ArrayAdapter<String> adapter;
+    private ArrayList<Game> mPlayersGameState;
+    private int mCurrentPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +49,9 @@ public class GameBoardActivity extends AppCompatActivity {
         };
 
         mScoreView = (TextView)findViewById(R.id.score_view);
+        mTurnView = (TextView) findViewById(R.id.turn_text_view);
+        mPlayerView = (TextView) findViewById(R.id.player_text_view);
+
         mRollButton = (Button)findViewById(R.id.roll_button);
 
         mChoicesSpinner = (Spinner)findViewById(R.id.choices_spinner);
@@ -63,10 +73,15 @@ public class GameBoardActivity extends AppCompatActivity {
 
             }
         });
-        mSelectedChoice = adapter.getItem(0);
+        mSelectedChoice = (String) mChoicesSpinner.getSelectedItem();
 
-
-        mGame = new Game("player1", new ThirtyPointCalculator());
+        Intent intent = getIntent();
+        int numPlayers = intent.getIntExtra(MenuActivity.NUM_PLAYERS, 1);
+        mPlayersGameState = new ArrayList<>();
+        ThirtyPointCalculator calc = new ThirtyPointCalculator();
+        for (int i = 0; i < numPlayers; i++) {
+            mPlayersGameState.add(new Game(String.format("Player %d", i+1), calc));
+        }
         updateRollButton();
     }
 
@@ -78,20 +93,26 @@ public class GameBoardActivity extends AppCompatActivity {
                 dices.add(i);
             }
         }
-        mGame.roll(dices.toArray(new Integer[dices.size()]));
+        mPlayersGameState.get(mCurrentPlayer).roll(dices.toArray(new Integer[dices.size()]));
 
         updateDiceButtons();
         updateRollButton();
 
-        if (mGame.rollsRemaining() == 0) {
+        if (mPlayersGameState.get(mCurrentPlayer).rollsRemaining() == 0) {
             mRollButton.setEnabled(false);
         }
     }
 
     public void showLeaderBoardActivity(View view) {
-        String[] playerNames = new String[]{mGame.getPlayerName()};
-        int[] playersScore = mGame.getScore();
-        int[] playersTotalScore = new int[]{mGame.getTotalScore()};
+        String[] playerNames = new String[mPlayersGameState.size()];
+        int[] playersScore = new int[mPlayersGameState.size()*10];
+        int[] playersTotalScore = new int[mPlayersGameState.size()];
+        for (int i = 0; i < mPlayersGameState.size(); i++) {
+            Game player = mPlayersGameState.get(i);
+            playerNames[i] = player.getPlayerName();
+            System.arraycopy(player.getScore(), 0, playersScore, i*10, player.getScore().length);
+            playersTotalScore[i] = mPlayersGameState.get(i).getTotalScore();
+        }
 
         PlayerScoreParcel dataParcel = new PlayerScoreParcel(playerNames, playersScore, playersTotalScore);
         Intent intent = new Intent(this, LeaderBoardActivity.class);
@@ -103,7 +124,7 @@ public class GameBoardActivity extends AppCompatActivity {
     private void updateDiceButtons() {
         int value;
         for (int i = 0; i < mDiceButtons.length; i++) {
-            value = mGame.getDiceValue(i);
+            value = mPlayersGameState.get(mCurrentPlayer).getDiceValue(i);
             switch (value) {
                 case 1: mDiceButtons[i].setImageResource(R.drawable.white1); break;
                 case 2: mDiceButtons[i].setImageResource(R.drawable.white2); break;
@@ -124,22 +145,30 @@ public class GameBoardActivity extends AppCompatActivity {
 
     public void confirmedPressed(View view) {
         if (!mSelectedChoice.equals("None")) {
-            mGame.calculatePoints(mSelectedChoice);
+            mPlayersGameState.get(mCurrentPlayer).calculatePoints(mSelectedChoice);
             adapter.remove(mSelectedChoice);
         }
         mSelectedChoice = (String)mChoicesSpinner.getSelectedItem();
-        mGame.endTurn();
+        mPlayersGameState.get(mCurrentPlayer).endTurn();
         updateRollButton();
         updateScoreView();
         mRollButton.setEnabled(true);
     }
 
+    private void updateTurnTextView() {
+
+    }
+
+    private void updatePlayerTextView() {
+
+    }
+
     private void updateRollButton() {
-        mRollButton.setText(String.format("Rolls: %d", mGame.rollsRemaining()));
+        mRollButton.setText(String.format("Rolls: %d", mPlayersGameState.get(mCurrentPlayer).rollsRemaining()));
     }
 
     private void updateScoreView() {
-        mScoreView.setText(String.format("Score: %d", mGame.getTotalScore()));
+        mScoreView.setText(String.format("Score: %d", mPlayersGameState.get(mCurrentPlayer).getTotalScore()));
     }
 
     @Override
