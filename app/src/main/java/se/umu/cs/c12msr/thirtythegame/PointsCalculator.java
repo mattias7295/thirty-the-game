@@ -5,5 +5,5 @@ package se.umu.cs.c12msr.thirtythegame;
  */
 public interface PointsCalculator {
 
-    public int calculate(Integer diceValues[], String choice);
+    public int calculate(int diceValues[], String choice);
 }

@@ -1,15 +1,15 @@
 package se.umu.cs.c12msr.thirtythegame;
 
-import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.View;
-import android.widget.GridView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+
+import java.util.Arrays;
 
 public class LeaderBoardActivity extends AppCompatActivity {
 
@@ -19,9 +19,9 @@ public class LeaderBoardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leader);
 
-        PlayerScoreParcel playerInfo = getIntent().getParcelableExtra(GameBoardActivity.SCORE);
-
-        int numPlayers = playerInfo.getPlayerName().length;
+        Parcelable[] parcelables = getIntent().getParcelableArrayExtra(GameBoardActivity.LEADERBOARD_SCORE);
+        PlayerDataParcel[] playersInfo = Arrays.copyOf(parcelables, parcelables.length, PlayerDataParcel[].class);
+        int numPlayers = playersInfo.length;
 
         TableLayout tl = (TableLayout)findViewById(R.id.score_table);
         int numRows = tl.getChildCount();
@@ -29,7 +29,7 @@ public class LeaderBoardActivity extends AppCompatActivity {
 
         for (int i = 0; i < numPlayers; i++) {
             TextView playerTextView = new TextView(this);
-            playerTextView.setText(playerInfo.getPlayerName()[i]);
+            playerTextView.setText(playersInfo[i].getPlayerName());
             playerTextView.setTypeface(Typeface.DEFAULT_BOLD);
             View topChild = tl.getChildAt(0);
             if (topChild instanceof TableRow) {
@@ -43,9 +43,7 @@ public class LeaderBoardActivity extends AppCompatActivity {
                 View child = tl.getChildAt(j);
                 if (child instanceof TableRow) {
                     TextView tmpView = new TextView(this);
-                    int index = (i*10)+(j-1);
-                    tmpView.setText(String.format("%d", playerInfo.getPlayerScore()[index]));
-
+                    tmpView.setText(String.format("%d", playersInfo[i].getPlayerScore()[j-1]));
                     TableRow row = (TableRow)child;
                     row.addView(tmpView);
                 }
@@ -53,7 +51,7 @@ public class LeaderBoardActivity extends AppCompatActivity {
         }
         for (int i = 0; i < numPlayers; i++) {
             TextView totalScoreView = new TextView(this);
-            totalScoreView.setText(String.format("%d",playerInfo.getPlayerTotalScore()[i]));
+            totalScoreView.setText(String.format("%d",playersInfo[i].getPlayerTotalScore()));
             totalScoreView.setTypeface(Typeface.DEFAULT_BOLD);
             View bottomChild = tl.getChildAt(numRows-1);
             if (bottomChild instanceof TableRow) {

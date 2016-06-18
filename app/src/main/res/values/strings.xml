@@ -12,6 +12,7 @@
     <string name="choice_10">10</string>
     <string name="choice_11">11</string>
     <string name="choice_12">12</string>
+    <string name="choice_none">None</string>
     <string name="total">Total</string>
     <string name="choice">Choice</string>
     <string name="player1">1 Player</string>
@@ -31,6 +32,6 @@
         <item>@string/choice_10</item>
         <item>@string/choice_11</item>
         <item>@string/choice_12</item>
-        <item>None</item>
+        <item>@string/choice_none</item>
     </string-array>
 </resources>

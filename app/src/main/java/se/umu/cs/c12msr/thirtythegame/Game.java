@@ -1,84 +1,76 @@
 package se.umu.cs.c12msr.thirtythegame;
 
-import java.util.Random;
+import android.support.annotation.NonNull;
+
+import java.util.ArrayList;
 
 /**
- * Created by Mattias Scherer on 2016-06-09.
+ * Created by Mattias Scherer on 2016-06-17.
  */
 public class Game {
 
-    private int mScore[];
-    private int mTotalScore;
-    private int mRolls;
-    private int mTurns;
-    private Integer mDiceValues[];
-    private String mPlayerName;
+    private ArrayList<Player> mPlayers;
+    private int mCurrentPlayer;
+    private int[] mDiceValues;
 
-    private PointsCalculator calculator;
-    private Random generator;
-
-    public Game(String playerName, PointsCalculator calculator) {
-        this.calculator = calculator;
-        this.mPlayerName = playerName;
-        mRolls = 3;
-        mTurns = 10;
-        mDiceValues = new Integer[6];
-        mScore = new int[10];
-        generator = new Random(System.currentTimeMillis());
+    public Game(String[] choices) {
+        this(1, choices);
     }
 
-    public String getPlayerName() {
-        return mPlayerName;
-    }
-
-
-
-    public boolean isFinished() {
-        return mTurns == 0;
-    }
-
-    public int rollsRemaining() {
-        return mRolls;
-    }
-
-    public void roll(Integer dices[]) {
-        for (int i = 0; i < dices.length; i++) {
-            mDiceValues[dices[i]] = generator.nextInt(6) + 1;
+    public Game(int numPlayers, String[] choices) {
+        mPlayers = new ArrayList<>(numPlayers);
+        for (int i = 0; i < numPlayers; i++) {
+            String name = String.format("Player %d", i+1);
+            mPlayers.add(new Player(name, new ThirtyPointCalculator(), choices));
         }
-        mRolls--;
+        mCurrentPlayer = 0;
+        mDiceValues = new int[GameConstants.NUM_DICES.getValue()];
     }
 
-    public void calculatePoints(String choice) {
+    public int getCurrentPlayerIndex() {
+        return mCurrentPlayer;
+    }
 
-        int val = calculator.calculate(mDiceValues, choice);
-        if (choice.equals("Low")) {
-            mScore[0] = val;
-        } else {
-            int x = Integer.parseInt(choice);
-            mScore[x-3] = val;
+    public Player getCurrentPlayer() {
+        return mPlayers.get(mCurrentPlayer);
+    }
+
+    public void nextPlayer() {
+        mCurrentPlayer++;
+        if (mCurrentPlayer == mPlayers.size()) {
+            mCurrentPlayer = 0;
         }
-        System.out.println(choice + " " + val);
-        mTotalScore += val;
     }
 
-    public int getDiceValue(int dice) {
-        return mDiceValues[dice];
-    }
-
-    public Integer[] getAllDiceValues() {
+    public int[] getDiceValues() {
         return mDiceValues;
     }
 
-    public void endTurn() {
-        mTurns--;
-        mRolls = 3;
+    private Game(ArrayList<Player> players, int currentPlayer, int[] diceValues) {
+        mPlayers = players;
+        mCurrentPlayer = currentPlayer;
+        mDiceValues = diceValues;
     }
 
-    public int getTotalScore() {
-        return mTotalScore;
+    public static Game restoreGame(PlayerDataParcel[] playersData, String[] choices,
+                                   int currentPlayer, int[] diceValues, int rolls) {
+        ArrayList<Player> players = new ArrayList<>(playersData.length);
+        for (PlayerDataParcel playerInfo: playersData) {
+            players.add(Player.restorePlayer(playerInfo, choices));
+        }
+        players.get(currentPlayer).setRollsRemaining(rolls);
+        return new Game(players, currentPlayer, diceValues);
     }
 
-    public int[] getScore() {
-        return mScore;
+
+    public PlayerDataParcel[] getPlayersDataParcel() {
+        PlayerDataParcel[] dataParcels = new PlayerDataParcel[mPlayers.size()];
+
+        for (int i = 0; i < mPlayers.size(); i++) {
+            Player player = mPlayers.get(i);
+            dataParcels[i] = new PlayerDataParcel(player.getPlayerName(), player.getScore(),
+                    player.getTotalScore(), player.getTurn());
+        }
+        return dataParcels;
     }
 }

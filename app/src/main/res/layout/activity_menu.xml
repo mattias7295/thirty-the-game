@@ -51,8 +51,7 @@
         android:layout_height="wrap_content"
         android:text="@string/menu_string"
         android:id="@+id/textView13"
-        android:layout_marginTop="37dp"
         style="@android:style/TextAppearance.DeviceDefault.Large"
-        android:layout_alignParentTop="true"
+        android:layout_above="@+id/player_1_button"
         android:layout_centerHorizontal="true" />
 </RelativeLayout>

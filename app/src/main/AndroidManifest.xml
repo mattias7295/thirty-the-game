@@ -17,7 +17,11 @@
 
         <activity
             android:name=".GameBoardActivity"
-            android:parentActivityName=".MenuActivity">
+            android:parentActivityName=".MenuActivity"
+            android:launchMode="singleTop">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MenuActivity" />
         </activity>
 
         <activity
