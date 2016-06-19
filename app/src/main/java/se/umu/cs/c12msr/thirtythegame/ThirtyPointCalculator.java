@@ -12,7 +12,7 @@ import java.util.Comparator;
 public class ThirtyPointCalculator implements PointsCalculator {
 
     @Override
-    public int calculate(Integer[] diceValues, String choice) {
+    public int calculate(int[] diceValues, String choice) {
         int res = 0;
 
         if (choice.equals("Low")) {
@@ -23,7 +23,7 @@ public class ThirtyPointCalculator implements PointsCalculator {
             int sum = Integer.parseInt(choice);
             int pairs = 0;
 
-            ArrayList<Integer> numbers = new ArrayList<>(Arrays.asList(diceValues));
+            ArrayList<Integer> numbers = toArray(diceValues);
             ArrayList<ArrayList<Integer>> allCombinations =
                     findAllComb(numbers, sum);
 
@@ -34,14 +34,9 @@ public class ThirtyPointCalculator implements PointsCalculator {
                 }
             });
 
-            for (ArrayList<Integer> set :
-                    allCombinations) {
-
-                //System.out.println("numbers("+Arrays.toString(numbers.toArray()) + ")");
-                //System.out.println("set("+Arrays.toString(set.toArray()) + ")");
-
+            for (ArrayList<Integer> set : allCombinations) {
                 if (allMatch(numbers, set)) {
-                    //System.out.println("sum("+Arrays.toString(set.toArray())+")="+sum);
+
                     pairs++;
                     for (Integer val :
                             set) {
@@ -53,6 +48,14 @@ public class ThirtyPointCalculator implements PointsCalculator {
         }
 
 
+        return res;
+    }
+
+    private ArrayList<Integer> toArray(int[] arr) {
+        ArrayList<Integer> res = new ArrayList<>(arr.length);
+        for (int i = 0; i < arr.length; i++) {
+            res.add(arr[i]);
+        }
         return res;
     }
 

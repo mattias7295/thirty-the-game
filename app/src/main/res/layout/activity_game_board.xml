@@ -77,25 +77,27 @@
         android:id="@+id/roll_button"
         android:onClick="rollDice"
         android:layout_below="@+id/dice6"
-        android:layout_alignEnd="@+id/dice6"
-        android:layout_marginTop="45dp" />
+        android:layout_alignEnd="@+id/dice6" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Score: "
         android:id="@+id/score_view"
+        android:textSize="@dimen/abc_text_size_medium_material"
         android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/dice5"
-        android:textSize="@dimen/abc_text_size_medium_material" />
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="20dp" />
 
     <Spinner
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/choices_spinner"
         android:spinnerMode="dropdown"
-        android:layout_alignParentBottom="true"
-        android:layout_toStartOf="@+id/confirm_button" />
+        android:layout_above="@+id/confirm_button"
+        android:layout_alignParentEnd="true"
+        android:layout_alignStart="@+id/confirm_button"
+        android:layout_marginBottom="20dp" />
 
     <Button
         android:layout_width="wrap_content"
@@ -122,7 +124,17 @@
         android:layout_height="wrap_content"
         android:text="Leaderboard"
         android:id="@+id/leader_board_button"
-        android:layout_alignTop="@+id/roll_button"
-        android:layout_alignParentStart="true"
-        android:onClick="showLeaderBoardActivity" />
+        android:onClick="showLeaderBoardActivity"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Turn:"
+        android:id="@+id/turn_text_view"
+        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@+id/score_view"
+        android:layout_marginRight="20dp"
+        android:textSize="@dimen/abc_text_size_medium_material" />
 </RelativeLayout>
