@@ -35,6 +35,17 @@
         </TableRow>
 
         <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:id="@+id/top_divider">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/black" />
+        </TableRow>
+
+        <TableRow
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1">
@@ -172,6 +183,16 @@
                 android:id="@+id/textView11"
                 android:background="@color/material_grey_300"
                 android:paddingLeft="5dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="1dp">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/black" />
         </TableRow>
 
         <TableRow

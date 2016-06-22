@@ -27,9 +27,7 @@ public class LeaderBoardActivity extends AppCompatActivity {
         TableLayout tl = (TableLayout)findViewById(R.id.score_table);
         int numRows = tl.getChildCount();
 
-        TableRow.LayoutParams lp = new TableRow.LayoutParams();
-        lp.gravity = Gravity.RIGHT;
-
+        /* fill names */
         for (int i = 0; i < numPlayers; i++) {
             View topChild = tl.getChildAt(0);
             if (topChild instanceof TableRow) {
@@ -41,17 +39,40 @@ public class LeaderBoardActivity extends AppCompatActivity {
             }
         }
 
+        /* draw divider */
         for (int i = 0; i < numPlayers; i++) {
-            for (int j = 1; j < numRows-1; j++) {
+            View child = tl.getChildAt(1);
+            if (child instanceof TableRow) {
+                View rowDivider = View.inflate(this, R.layout.black_divider, null);
+                TableRow row = (TableRow) child;
+                row.addView(rowDivider);
+            }
+        }
+
+        /* fill table with score */
+        for (int i = 0; i < numPlayers; i++) {
+            for (int j = 2; j < numRows-2; j++) {
                 View child = tl.getChildAt(j);
                 if (child instanceof TableRow) {
                     TextView tvScore = (TextView) View.inflate(this, R.layout.text_view_right_aligned, null);
-                    tvScore.setText(String.format("%d", playersInfo[i].getPlayerScore()[j-1]));
+                    tvScore.setText(String.format("%d", playersInfo[i].getPlayerScore()[j-2]));
                     TableRow row = (TableRow)child;
                     row.addView(tvScore);
                 }
             }
         }
+
+        /* draw divider */
+//        for (int i = 0; i < numPlayers; i++) {
+//            View child = tl.getChildAt(numRows-2);
+//            if (child instanceof TableRow) {
+//                View rowDivider = View.inflate(this, R.layout.black_divider, null);
+//                TableRow row = (TableRow) child;
+//                row.addView(rowDivider);
+//            }
+//        }
+
+        /* fill total score */
         for (int i = 0; i < numPlayers; i++) {
             TextView tvTotalScore = (TextView) View.inflate(this, R.layout.text_view_right_aligned, null);
             tvTotalScore.setText(String.format("%d",playersInfo[i].getPlayerTotalScore()));
