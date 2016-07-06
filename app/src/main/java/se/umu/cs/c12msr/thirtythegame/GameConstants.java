@@ -10,7 +10,7 @@ package se.umu.cs.c12msr.thirtythegame;
 public enum GameConstants {
     NUM_ROLLS (3),
     NUM_DICES (6),
-    NUM_TURNS (3),
+    NUM_TURNS (10),
     NUM_CHOICES (10);
 
     private final int value;
