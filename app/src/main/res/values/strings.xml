@@ -20,6 +20,12 @@
     <string name="player3">3 Players</string>
     <string name="player4">4 Players</string>
     <string name="menu_string">Select number of players</string>
+    <string name="dice_desc">Dice</string>
+    <string name="roll_button">Roll</string>
+    <string name="score_lable">Score</string>
+    <string name="player_lable">Player</string>
+    <string name="leaderboard_button">Leaderboard</string>
+    <string name="turn_lable">Turn</string>
 
     <string-array name="choices_array">
         <item>@string/choice_low</item>

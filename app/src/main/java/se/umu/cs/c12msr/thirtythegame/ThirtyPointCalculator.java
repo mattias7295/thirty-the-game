@@ -1,15 +1,21 @@
 package se.umu.cs.c12msr.thirtythegame;
 
 
+import android.util.Log;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 
 /**
- * Created by Mattias Scherer on 2016-06-10.
+ * Default implementation of a point calculator.
+ *
+ * @author Mattias Scherer
+ * @version 1.0
  */
 public class ThirtyPointCalculator implements PointsCalculator {
+
+    private static final String TAG = "ThirtyPointCalculator";
 
     @Override
     public int calculate(int[] diceValues, String choice) {
@@ -21,7 +27,7 @@ public class ThirtyPointCalculator implements PointsCalculator {
             }
         } else {
             int sum = Integer.parseInt(choice);
-            int pairs = 0;
+
 
             ArrayList<Integer> numbers = toArray(diceValues);
             ArrayList<ArrayList<Integer>> allCombinations =
@@ -33,23 +39,30 @@ public class ThirtyPointCalculator implements PointsCalculator {
                     return lhs.size() > rhs.size() ? 1 : -1;
                 }
             });
-
-            for (ArrayList<Integer> set : allCombinations) {
-                if (allMatch(numbers, set)) {
-
-                    pairs++;
-                    for (Integer val :
-                            set) {
-                        numbers.remove(val);
-                    }
-                }
-            }
-            res = pairs * sum;
+            Log.i(TAG, allCombinations.toString());
+            res = maxPairs(numbers, allCombinations) * sum;
         }
 
 
         return res;
     }
+
+    private int maxPairs(ArrayList<Integer> numbers, ArrayList<ArrayList<Integer>> allCombinations) {
+        int pairs = 0;
+        for (ArrayList<Integer> set : allCombinations) {
+            Log.i(TAG, set.toString());
+            if (allMatch(numbers, set)) {
+
+                pairs++;
+                for (Integer val :
+                        set) {
+                    numbers.remove(val);
+                }
+            }
+        }
+        return pairs;
+    }
+
 
     private ArrayList<Integer> toArray(int[] arr) {
         ArrayList<Integer> res = new ArrayList<>(arr.length);

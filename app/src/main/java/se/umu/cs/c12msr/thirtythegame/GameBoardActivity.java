@@ -14,33 +14,79 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
+/**
+ * This class handles the lifecycle and other events when
+ * displaying the gameboard to the user.
+ *
+ * @author Mattias Scherer
+ * @version 1.0
+ */
 public class GameBoardActivity extends AppCompatActivity {
 
+    /*
+     * Debug tag for logging debug output to LogCat.
+     */
     private final static String TAG = "GameBoardActivity";
 
-
+    /**
+     * Key used to receive the players score from an intent
+     */
     public final static String LEADERBOARD_SCORE = "se.umu.cs.c12msr.thirtythegame.VALUES";
 
+    /*
+     * Keys used when saving/restoring the state of the game.
+     */
     private final static String GAME_PLAYERS_DATA = "playersdata";
     private final static String GAME_CURRENT_PLAYER = "currentplayer";
     private final static String GAME_ROLLS_REMAINING = "rollsremaining";
     private final static String GAME_CURRENT_DICE_VALUES = "dicevalues";
 
+    /*
+     * The dices on this activity.
+     */
     private ImageButton mDiceButtons[];
 
+    /*
+     * Displays the current player's score.
+     */
     private TextView mScoreView;
+
+    /*
+     * Displays the current player's turn.
+     */
     private TextView mTurnView;
+
+    /*
+     * Displays the current player's name.
+     */
     private TextView mPlayerView;
 
+    /*
+     * Roll dices when pressed.
+     */
     private Button mRollButton;
 
+    /*
+     * Displays choices.
+     */
     private Spinner mChoicesSpinner;
 
+    /*
+     * Selected choice.
+     */
     private String mSelectedChoice;
-    private ArrayAdapter<String> adapter;
-    private Game game;
 
+    /*
+     * Adapter for mChoicesSpinner.
+     */
+    private ArrayAdapter<String> adapter;
+
+    /*
+     * The game state.
+     */
+    private Game game;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,7 +172,7 @@ public class GameBoardActivity extends AppCompatActivity {
         updateDiceButtons();
         mSelectedChoice = (String) mChoicesSpinner.getSelectedItem();
         Player player = game.getCurrentPlayer();
-        if (player.rollsRemaining() == 3) {
+        if (player.rollsRemaining() == GameConstants.NUM_ROLLS.getValue()) {
             lockDiceButtons();
         } else if (!player.canRoll()) {
             mRollButton.setEnabled(false);
@@ -163,10 +209,15 @@ public class GameBoardActivity extends AppCompatActivity {
         super.onRestart();
     }
 
+    /**
+     * Rolls the dices when <tt>view</tt> is pressed
+     * @param view the view that was pressed.
+     */
     public void rollDice(View view) {
         Player currentPlayer = game.getCurrentPlayer();
 
-        if (currentPlayer.rollsRemaining() == 3) {
+        /* Re-enable the dices after the first roll */
+        if (currentPlayer.rollsRemaining() == GameConstants.NUM_ROLLS.getValue()) {
             releaseDiceButtons();
         }
 
@@ -185,14 +236,23 @@ public class GameBoardActivity extends AppCompatActivity {
             mRollButton.setEnabled(false);
         }
     }
+    /**
+     * Starts <tt>LeaderBoardActivity</tt> when <tt>view</tt> is pressed.
+     * @param view the view that was pressed
+     */
+    public void leaderButtonPressed(View view) {
+        if (view.getId() == R.id.leader_board_button) {
+            showLeaderBoardActivity();
+        }
+    }
 
-    public void showLeaderBoardActivity(View view) {
+
+    private void showLeaderBoardActivity() {
         PlayerDataParcel[] dataParcel = game.getPlayersDataParcel();
         Intent intent = new Intent(this, LeaderBoardActivity.class);
         intent.putExtra(LEADERBOARD_SCORE, dataParcel);
         startActivity(intent);
     }
-
 
 
     private void releaseDiceButtons() {
@@ -216,6 +276,9 @@ public class GameBoardActivity extends AppCompatActivity {
         }
     }
 
+    /*
+     * Set the image of a button the corresponding dice value.
+     */
     private void updateDiceButtons() {
         int value;
         for (int i = 0; i < mDiceButtons.length; i++) {
@@ -234,11 +297,20 @@ public class GameBoardActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Toggle disable/enable a dice when pressed.
+     * @param view the view that was pressed
+     */
     public void dicePressed(View view) {
         ImageButton ib = (ImageButton)view;
         ib.setSelected(!ib.isSelected());
     }
 
+    /**
+     * Calculate points and end the turn. Move the turn to the next
+     * player and update the gameboard.
+     * @param view the view that was pressed
+     */
     public void confirmedPressed(View view) {
         Log.i(TAG, "Choice: " + mSelectedChoice);
         if (!mSelectedChoice.equals("None")) {
@@ -253,15 +325,23 @@ public class GameBoardActivity extends AppCompatActivity {
 
         game.nextPlayer();
 
-        updateRollButton();
-        updateGameBoard();
-        mSelectedChoice = mChoicesSpinner.getSelectedItem().toString();
+        if (game.getCurrentPlayer().isFinished()) {
+            showLeaderBoardActivity();
+            lockDiceButtons();
+            mRollButton.setEnabled(false);
+        } else {
+            updateRollButton();
+            updateGameBoard();
+            mSelectedChoice = mChoicesSpinner.getSelectedItem().toString();
+        }
     }
 
     private void updateGameBoard() {
-        mTurnView.setText(String.format("Turn: %d", game.getCurrentPlayer().getTurn()));
+        mTurnView.setText(String.format(Locale.ENGLISH,
+                "Turn: %d", game.getCurrentPlayer().getTurn()));
         mPlayerView.setText(game.getCurrentPlayer().getPlayerName());
-        mScoreView.setText(String.format("Score: %d", game.getCurrentPlayer().getTotalScore()));
+        mScoreView.setText(String.format(Locale.ENGLISH,
+                "Score: %d", game.getCurrentPlayer().getTotalScore()));
 
         adapter.clear();
         adapter.addAll(game.getCurrentPlayer().getChoices());
@@ -269,7 +349,8 @@ public class GameBoardActivity extends AppCompatActivity {
 
 
     private void updateRollButton() {
-        mRollButton.setText(String.format("Rolls: %d", game.getCurrentPlayer().rollsRemaining()));
+        mRollButton.setText(String.format(Locale.ENGLISH,
+                "Rolls: %d", game.getCurrentPlayer().rollsRemaining()));
     }
 
 

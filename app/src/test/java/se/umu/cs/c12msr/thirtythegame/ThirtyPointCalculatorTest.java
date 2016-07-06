@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
  */
 public class ThirtyPointCalculatorTest {
 
-    ThirtyPointCalculator calculator;
+    private ThirtyPointCalculator calculator;
 
     @Before
     public void setUp() throws Exception {
@@ -19,7 +19,7 @@ public class ThirtyPointCalculatorTest {
 
     @Test
     public void testCalculate() throws Exception {
-        Integer diceValues[] = new Integer[] {3,1,4,1,3,1};
+        int diceValues[] = new int[] {3,1,4,1,3,1};
 
         String choice = "Low";
 
@@ -37,7 +37,7 @@ public class ThirtyPointCalculatorTest {
 
     @Test
     public void testCalculate2() throws Exception {
-        Integer diceValues[] = new Integer[] {6,5,4,1,6,2};
+        int diceValues[] = new int[] {6,5,4,1,6,2};
 
         String choice = "7";
         assertEquals(14, calculator.calculate(diceValues, choice));
